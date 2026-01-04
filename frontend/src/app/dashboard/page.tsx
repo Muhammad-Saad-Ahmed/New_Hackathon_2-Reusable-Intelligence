@@ -1,0 +1,129 @@
+'use client'
+
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/lib/auth';
+import Header from '@/src/components/Header';
+import TaskList from '@/src/components/TaskList';
+import { apiClient } from '@/src/lib/api';
+
+interface TaskSummary {
+  total: number;
+  completed: number;
+  pending: number;
+}
+
+export default function Dashboard() {
+  const { user, isSignedIn } = useAuth();
+  const [summary, setSummary] = useState<TaskSummary>({ total: 0, completed: 0, pending: 0 });
+
+  useEffect(() => {
+    if (isSignedIn && user) {
+      fetchTaskSummary();
+    }
+  }, [isSignedIn, user]);
+
+  const fetchTaskSummary = async () => {
+    if (!user) return;
+
+    try {
+      const response = await apiClient.getTasks(user.id);
+      if (response.success && response.data) {
+        const tasks = response.data;
+        const completed = tasks.filter((task: any) => task.completed).length;
+        setSummary({
+          total: tasks.length,
+          completed,
+          pending: tasks.length - completed
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching task summary:', error);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        {isSignedIn ? (
+          <>
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+              <p className="text-gray-600">Welcome back, {user?.name || user?.email}!</p>
+            </div>
+
+            {/* Task Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="px-4 py-5 sm:p-6">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
+                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="text-sm font-medium text-gray-500 truncate">Total Tasks</dt>
+                        <dd className="flex items-baseline">
+                          <div className="text-2xl font-semibold text-gray-900">{summary.total}</div>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="px-4 py-5 sm:p-6">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
+                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="text-sm font-medium text-gray-500 truncate">Completed</dt>
+                        <dd className="flex items-baseline">
+                          <div className="text-2xl font-semibold text-gray-900">{summary.completed}</div>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="px-4 py-5 sm:p-6">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="text-sm font-medium text-gray-500 truncate">Pending</dt>
+                        <dd className="flex items-baseline">
+                          <div className="text-2xl font-semibold text-gray-900">{summary.pending}</div>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Task List */}
+            <TaskList />
+          </>
+        ) : (
+          <div className="text-center py-10">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Please sign in to access your dashboard</h2>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
