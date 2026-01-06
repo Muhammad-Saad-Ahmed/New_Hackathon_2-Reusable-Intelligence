@@ -44,16 +44,22 @@ export default function TaskList() {
       });
 
       if (response.success && response.data) {
+        // The response.data could be an array of tasks or an object with a data property
+        let tasksData = Array.isArray(response.data) ? response.data : (response.data as any).data;
+        if (!Array.isArray(tasksData)) {
+          tasksData = [];
+        }
+
         // Apply search filter client-side
-        let filteredTasks = response.data.data as Task[];
+        let filteredTasks = tasksData as Task[];
         if (filters.search) {
           const searchTerm = filters.search.toLowerCase();
-          filteredTasks = filteredTasks.filter(task => 
-            task.title.toLowerCase().includes(searchTerm) || 
+          filteredTasks = filteredTasks.filter(task =>
+            task.title.toLowerCase().includes(searchTerm) ||
             (task.description && task.description.toLowerCase().includes(searchTerm))
           );
         }
-        
+
         setTasks(filteredTasks);
       }
     } catch (error) {
@@ -79,11 +85,17 @@ export default function TaskList() {
     }
   };
 
-  const handleUpdateTask = async (taskData: Task) => {
-    if (!user) return;
+  const handleUpdateTask = async (taskData: { title: string; description?: string; priority?: string; tags?: string[] }) => {
+    if (!user || !editingTask) return;
 
     try {
-      const response = await apiClient.updateTask(user.id, taskData.id, taskData);
+      // Merge the new task data with the existing task data
+      const updatedTaskData = {
+        ...editingTask,
+        ...taskData
+      };
+
+      const response = await apiClient.updateTask(user.id, editingTask.id, updatedTaskData);
 
       if (response.success) {
         setEditingTask(null);

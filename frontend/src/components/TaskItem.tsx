@@ -7,6 +7,9 @@ interface Task {
   completed: boolean;
   priority?: string;
   tags?: string[];
+  user_id: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface TaskItemProps {

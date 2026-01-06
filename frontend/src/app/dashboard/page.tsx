@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth';
-import Header from '@/src/components/Header';
-import TaskList from '@/src/components/TaskList';
-import { apiClient } from '@/src/lib/api';
+import Header from '@/components/Header';
+import TaskList from '@/components/TaskList';
+import { apiClient } from '@/lib/api';
 
 interface TaskSummary {
   total: number;
@@ -28,7 +28,8 @@ export default function Dashboard() {
     try {
       const response = await apiClient.getTasks(user.id);
       if (response.success && response.data) {
-        const tasks = response.data;
+        // The response.data should be an array of tasks
+        const tasks = Array.isArray(response.data) ? response.data : [];
         const completed = tasks.filter((task: any) => task.completed).length;
         setSummary({
           total: tasks.length,
