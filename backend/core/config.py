@@ -3,6 +3,9 @@ Configuration settings for the Todo Application backend.
 """
 import os
 from typing import List
+from dotenv import load_dotenv
+
+load_dotenv() # Load environment variables from .env file
 
 
 class Settings:
@@ -23,6 +26,7 @@ class Settings:
 
         # Database settings
         self.DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
+        print(f"DEBUG: Using DATABASE_URL: {self.DATABASE_URL}")
 
         # Auth settings
         self.BETTER_AUTH_SECRET = os.getenv("BETTER_AUTH_SECRET", "your-secret-key-here")

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(findstr vercel)",
+      "Bash(findstr -i docker)",
+      "Bash(ls -la *.db)",
+      "Bash(find . -name \"*.py\" -exec grep -l \"dotenv\\\\|load_env\" {} ;)"
+    ]
+  }
+}

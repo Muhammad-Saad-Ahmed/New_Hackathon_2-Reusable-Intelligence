@@ -26,16 +26,22 @@ export default function Dashboard() {
     if (!user) return;
 
     try {
+      console.log('Fetching tasks for user ID:', user.id); // Debug log
       const response = await apiClient.getTasks(user.id);
+      console.log('API response:', response); // Debug log
+
       if (response.success && response.data) {
         // The response.data should be an array of tasks
         const tasks = Array.isArray(response.data) ? response.data : [];
+        console.log('Tasks received:', tasks); // Debug log
         const completed = tasks.filter((task: any) => task.completed).length;
         setSummary({
           total: tasks.length,
           completed,
           pending: tasks.length - completed
         });
+      } else {
+        console.error('API call failed:', response.error); // Log API errors
       }
     } catch (error) {
       console.error('Error fetching task summary:', error);

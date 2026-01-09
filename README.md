@@ -60,7 +60,12 @@ python -m src.main
 1. Start the backend:
    ```bash
    cd backend
-   uvicorn main:app --reload
+   python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+   ```
+
+   Alternatively, from the project root directory:
+   ```bash
+   python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
    ```
 2. In a new terminal, start the frontend:
    ```bash
@@ -84,7 +89,6 @@ python -m src.main
 
 ### Architecture
 The application follows a clean architecture with separation of concerns:
-
 #### Phase I Architecture
 - **Models**: Define the data structures (Task model)
 - **Repositories**: Handle data storage and retrieval (in-memory)
@@ -202,8 +206,10 @@ python test_final_validation.py
 ```
 
 ### Phase II Development
-- Backend: Use uvicorn with --reload for development
-- Frontend: Use npm run dev for hot reloading
+- Backend: Run the backend server with hot reloading using either:
+  - From the project root: `python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload`
+  - From the backend directory: `python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload`
+- Frontend: Use `npm run dev` in the frontend directory for hot reloading
 
 ### Running Tests
 For backend API tests:
