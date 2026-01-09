@@ -22,7 +22,7 @@ export default function SignupPage() {
     }
 
     try {
-      const response = await apiClient.registerUser({
+      const response = await apiClient.signup({
         name,
         email,
         password,

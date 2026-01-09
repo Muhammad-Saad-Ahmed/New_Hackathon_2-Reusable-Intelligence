@@ -9,14 +9,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-  const { signIn } = useAuth();
+  const { signin } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(''); // Clear previous errors
 
     try {
-      const success = await signIn(email, password);
+      const success = await signin(email, password);
 
       if (success) {
         router.push('/'); // Redirect to home after successful login
