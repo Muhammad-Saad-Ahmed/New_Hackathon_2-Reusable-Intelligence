@@ -6,7 +6,7 @@ from typing import Optional, Dict, Any
 import jwt
 from passlib.context import CryptContext
 from fastapi import HTTPException, status
-from backend.core.config import settings
+from core.config import settings
 
 
 # Password hashing context
