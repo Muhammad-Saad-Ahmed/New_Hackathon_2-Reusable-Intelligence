@@ -3,11 +3,11 @@ Authentication API endpoints for the Todo Application backend.
 """
 from fastapi import APIRouter, Depends, HTTPException, status, Form, Request
 from sqlalchemy.orm import Session
-from core.database import get_db
-from schemas.task import UserCreate, User, MessageResponse, LoginRequest
-from models.database import User as UserModel
-from core.security import get_password_hash, verify_password, create_access_token
-from middleware.auth_middleware import JWTBearer
+from backend.core.database import get_db
+from backend.schemas.task import UserCreate, User, MessageResponse
+from backend.models.database import User as UserModel
+from backend.core.security import get_password_hash, verify_password, create_access_token
+from backend.middleware.auth_middleware import JWTBearer
 import uuid
 from datetime import timedelta
 
@@ -45,14 +45,14 @@ async def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/auth/login")
-async def login_user(login_data: LoginRequest, db: Session = Depends(get_db)):
+async def login_user(email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
     """
     Login a user and return a JWT token.
     """
     # Find the user by email
-    user = db.query(UserModel).filter(UserModel.email == login_data.email).first()
+    user = db.query(UserModel).filter(UserModel.email == email).first()
 
-    if not user or not verify_password(login_data.password, user.hashed_password):
+    if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
@@ -75,7 +75,7 @@ async def get_current_user(request: Request, db: Session = Depends(get_db), toke
     Get the current authenticated user's information.
     """
     try:
-        user_id = uuid.UUID(token_data.get("sub"))
+        user_id = uuid.UUID(request.state.user_id)
     except (ValueError, TypeError):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

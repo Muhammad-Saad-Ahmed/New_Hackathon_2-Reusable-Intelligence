@@ -1,40 +1,43 @@
 """
-Authentication middleware for FastAPI.
+Authentication middleware for the Todo Application backend.
 """
-from fastapi import HTTPException, status, Request
+from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from core.security import decode_access_token
-from typing import Optional
+from backend.core.security import verify_token
+from backend.schemas.task import TokenData
+
 
 class JWTBearer(HTTPBearer):
     """
-    A FastAPI dependency that handles JWT token authentication.
+    JWT token authentication middleware.
     """
     def __init__(self, auto_error: bool = True):
-        super().__init__(auto_error=auto_error)
+        super(JWTBearer, self).__init__(auto_error=auto_error)
 
-    async def __call__(self, request: Request) -> Optional[dict]:
-        credentials: Optional[HTTPAuthorizationCredentials] = await super().__call__(request)
+    async def __call__(self, request: Request):
+        credentials: HTTPAuthorizationCredentials = await super(JWTBearer, self).__call__(request)
+        
         if credentials:
-            if credentials.scheme != "Bearer":
+            if not credentials.scheme == "Bearer":
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid authentication scheme.",
-                    headers={"WWW-Authenticate": "Bearer"},
+                    detail="Invalid authentication scheme."
                 )
-            token_data = decode_access_token(credentials.credentials)
-            if not token_data:
+            token = credentials.credentials
+            token_data = verify_token(token)
+            if token_data is None:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid or expired token.",
-                    headers={"WWW-Authenticate": "Bearer"},
+                    detail="Invalid token or expired token."
                 )
+            
+            # Add user info to request state for use in endpoints
+            request.state.user_id = token_data.get("sub")
+            request.state.user_email = token_data.get("email")
+            
             return token_data
         else:
-            if self.auto_error:
-                raise HTTPException(
-                    status_code=status.HTTP_403_FORBIDDEN,
-                    detail="Not authenticated.",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
-            return None
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid authorization code."
+            )

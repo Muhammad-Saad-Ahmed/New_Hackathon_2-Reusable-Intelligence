@@ -1,36 +1,47 @@
-"""
-Script to create a test user in the database.
-"""
+
+import sys
+import os
 from sqlalchemy.orm import Session
-from core.database import SessionLocal
-from models.database import User
-from core.security import get_password_hash
-import uuid
+from sqlalchemy import create_engine
+
+# Add the project root to the Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from backend.core.config import settings
+from backend.core.security import get_password_hash
+from backend.models.database import User as UserModel, Base
 
 def create_test_user():
-    db: Session = SessionLocal()
+    """
+    Creates a test user in the database.
+    """
+    engine = create_engine(settings.DATABASE_URL)
+    
+    # Ensure tables are created (optional, but good for standalone scripts)
+    Base.metadata.create_all(bind=engine)
+    
+    db = Session(bind=engine)
+
     try:
-        email = "test@example.com"
-        password = "password"
-        
-        existing_user = db.query(User).filter(User.email == email).first()
+        # Check if user already exists
+        existing_user = db.query(UserModel).filter(UserModel.email == "test@example.com").first()
         if existing_user:
-            print(f"User with email {email} already exists.")
+            print("Test user 'test@example.com' already exists.")
             return
 
-        hashed_password = get_password_hash(password)
-        db_user = User(
-            id=uuid.uuid4(),
-            email=email,
+        # Create new user
+        hashed_password = get_password_hash("testpass")
+        db_user = UserModel(
+            email="test@example.com",
             name="Test User",
             hashed_password=hashed_password
         )
+
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
-        print(f"Test user '{email}' created successfully.")
-    except Exception as e:
-        print(f"Error creating test user: {e}")
+        print(f"Successfully created user 'test@example.com' with ID: {db_user.id}")
+
     finally:
         db.close()
 

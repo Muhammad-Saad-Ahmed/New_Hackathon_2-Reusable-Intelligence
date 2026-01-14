@@ -1,30 +1,24 @@
 'use client'
 
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
-import { useEffect } from 'react';
+import Header from '@/components/Header';
+import TaskList from '@/components/TaskList';
 
 export default function Home() {
-  const router = useRouter();
-  const { isSignedIn, loading } = useAuth();
+  const { isSignedIn } = useAuth();
 
-  useEffect(() => {
-    if (!loading && !isSignedIn) {
-      router.push('/login');
-    } else if (!loading && isSignedIn) {
-      router.push('/dashboard');
-    }
-  }, [isSignedIn, loading, router]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Loading...
-        </h2>
-      </div>
-    );
-  }
-
-  return null; // Will redirect or show dashboard
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        {isSignedIn ? (
+          <TaskList />
+        ) : (
+          <div className="text-center py-10">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Please sign in to access your tasks</h2>
+          </div>
+        )}
+      </main>
+    </div>
+  );
 }

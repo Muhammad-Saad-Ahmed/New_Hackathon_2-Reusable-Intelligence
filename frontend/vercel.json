@@ -1,7 +1,4 @@
 {
   "framework": "nextjs",
-  "buildCommand": "next build",
-  "env": {
-    "NEXT_PUBLIC_API_URL": "https://new-hackathon-2-reusable-intelligen-peach.vercel.app/api/v1"
-  }
+  "buildCommand": "next build"
 }

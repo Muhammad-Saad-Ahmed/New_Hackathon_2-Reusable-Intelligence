@@ -3,10 +3,24 @@ FastAPI application for the Todo Application backend.
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.v1.tasks import router as tasks_router
-from api.v1.auth import router as auth_router
-from core.config import settings
-from core.database import Base, engine
+
+# Import using relative imports from the project root
+import sys
+import os
+
+# Add the project root to the Python path to resolve imports
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
+
+try:
+    # Import after setting up path to avoid import-time errors
+    from backend.api.v1.tasks import router as tasks_router
+    from backend.api.v1.auth import router as auth_router
+    from backend.core.config import settings
+    from backend.core.database import Base, engine  # Import Base and engine
+except ImportError as e:
+    print(f"Failed to import required modules: {e}")
+    raise
 
 # Create the FastAPI app instance
 app = FastAPI(
@@ -16,8 +30,12 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+try:
+    # Create database tables
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"Failed to create database tables: {e}")
+    raise
 
 # Add CORS middleware
 app.add_middleware(
@@ -29,8 +47,12 @@ app.add_middleware(
 )
 
 # Include API routers
-app.include_router(tasks_router, prefix=settings.API_V1_STR, tags=["tasks"])
-app.include_router(auth_router, prefix=settings.API_V1_STR, tags=["auth"])
+try:
+    app.include_router(tasks_router, prefix=settings.API_V1_STR, tags=["tasks"])
+    app.include_router(auth_router, prefix=settings.API_V1_STR, tags=["auth"])
+except Exception as e:
+    print(f"Failed to include API routers: {e}")
+    raise
 
 
 @app.get("/")
@@ -58,7 +80,7 @@ if __name__ == "__main__":
     reload = getattr(settings, 'DEBUG', False)
 
     uvicorn.run(
-        "main:app",  # Use full module path
+        "backend.main:app",  # Use full module path
         host=host,
         port=port,
         reload=reload
