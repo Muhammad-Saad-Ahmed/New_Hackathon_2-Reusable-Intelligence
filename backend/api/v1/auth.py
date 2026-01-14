@@ -3,11 +3,11 @@ Authentication API endpoints for the Todo Application backend.
 """
 from fastapi import APIRouter, Depends, HTTPException, status, Form, Request
 from sqlalchemy.orm import Session
-from backend.core.database import get_db
-from backend.schemas.task import UserCreate, User, MessageResponse
-from backend.models.database import User as UserModel
-from backend.core.security import get_password_hash, verify_password, create_access_token
-from backend.middleware.auth_middleware import JWTBearer
+from core.database import get_db
+from schemas.task import UserCreate, User, MessageResponse
+from models.database import User as UserModel
+from core.security import get_password_hash, verify_password, create_access_token
+from middleware.auth_middleware import JWTBearer
 import uuid
 from datetime import timedelta
 
@@ -75,7 +75,7 @@ async def get_current_user(request: Request, db: Session = Depends(get_db), toke
     Get the current authenticated user's information.
     """
     try:
-        user_id = uuid.UUID(request.state.user_id)
+        user_id = uuid.UUID(token_data.get("sub"))
     except (ValueError, TypeError):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

@@ -4,20 +4,14 @@ FastAPI application for the Todo Application backend.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Import using relative imports from the project root
-import sys
-import os
 
-# Add the project root to the Python path to resolve imports
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, project_root)
 
 try:
     # Import after setting up path to avoid import-time errors
-    from backend.api.v1.tasks import router as tasks_router
-    from backend.api.v1.auth import router as auth_router
-    from backend.core.config import settings
-    from backend.core.database import Base, engine  # Import Base and engine
+    from api.v1.tasks import router as tasks_router
+    from api.v1.auth import router as auth_router
+    from core.config import settings
+    from core.database import Base, engine  # Import Base and engine
 except ImportError as e:
     print(f"Failed to import required modules: {e}")
     raise
@@ -80,7 +74,7 @@ if __name__ == "__main__":
     reload = getattr(settings, 'DEBUG', False)
 
     uvicorn.run(
-        "backend.main:app",  # Use full module path
+        "main:app",  # Use full module path
         host=host,
         port=port,
         reload=reload

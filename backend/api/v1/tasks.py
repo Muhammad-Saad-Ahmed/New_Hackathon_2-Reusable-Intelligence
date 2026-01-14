@@ -4,10 +4,10 @@ Task API endpoints for the Todo Application backend.
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from backend.core.database import get_db
-from backend.services.task_service import TaskService
-from backend.schemas.task import TaskCreate, TaskUpdate, Task, TasksResponse, TaskResponse, MessageResponse
-from backend.middleware.auth_middleware import JWTBearer
+from core.database import get_db
+from services.task_service import TaskService
+from schemas.task import TaskCreate, TaskUpdate, Task, TasksResponse, TaskResponse, MessageResponse
+from middleware.auth_middleware import JWTBearer
 from uuid import UUID
 import uuid
 

@@ -4,8 +4,8 @@ Service layer for managing Task business logic in the backend.
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_
-from backend.models.database import Task, User
-from backend.schemas.task import TaskCreate, TaskUpdate
+from models.database import Task, User
+from schemas.task import TaskCreate, TaskUpdate
 
 
 class TaskService:

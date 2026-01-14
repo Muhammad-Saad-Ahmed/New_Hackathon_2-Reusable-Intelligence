@@ -3,8 +3,8 @@ Authentication middleware for the Todo Application backend.
 """
 from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from backend.core.security import verify_token
-from backend.schemas.task import TokenData
+from core.security import verify_token
+from schemas.task import TokenData
 
 
 class JWTBearer(HTTPBearer):
