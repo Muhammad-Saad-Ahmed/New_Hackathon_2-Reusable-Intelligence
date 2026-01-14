@@ -112,10 +112,10 @@ export const apiClient = {
 
   async signin(email: string, password: string) {
     try {
-      const response = await fetch(`${API_URL}/auth/token`, {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ username: email, password }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
       return await handleResponse(response);
     } catch (error) {

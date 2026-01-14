@@ -1,135 +1,57 @@
 'use client'
 
-import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth';
-import Header from '@/components/Header';
-import TaskList from '@/components/TaskList';
-import { apiClient } from '@/lib/api';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-interface TaskSummary {
-  total: number;
-  completed: number;
-  pending: number;
-}
-
-export default function Dashboard() {
-  const { user, isSignedIn } = useAuth();
-  const [summary, setSummary] = useState<TaskSummary>({ total: 0, completed: 0, pending: 0 });
+export default function DashboardPage() {
+  const { user, loading, signout } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
-    if (isSignedIn && user) {
-      fetchTaskSummary();
+    if (!loading && !user) {
+      router.push('/login');
     }
-  }, [isSignedIn, user]);
+  }, [user, loading, router]);
 
-  const fetchTaskSummary = async () => {
-    if (!user) return;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Loading...
+        </h2>
+      </div>
+    );
+  }
 
-    try {
-      console.log('Fetching tasks for user ID:', user.id); // Debug log
-      const response = await apiClient.getTasks(user.id);
-      console.log('API response:', response); // Debug log
-
-      if (response.success && response.data) {
-        // The response.data should be an array of tasks
-        const tasks = Array.isArray(response.data) ? response.data : [];
-        console.log('Tasks received:', tasks); // Debug log
-        const completed = tasks.filter((task: any) => task.completed).length;
-        setSummary({
-          total: tasks.length,
-          completed,
-          pending: tasks.length - completed
-        });
-      } else {
-        console.error('API call failed:', response.error); // Log API errors
-      }
-    } catch (error) {
-      console.error('Error fetching task summary:', error);
-    }
-  };
+  if (!user) {
+    return null; // Should redirect to login
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-        {isSignedIn ? (
-          <>
-            <div className="mb-8">
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600">Welcome back, {user?.name || user?.email}!</p>
+    <div className="min-h-screen bg-gray-100">
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <button
+            onClick={signout}
+            className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Sign Out
+          </button>
+        </div>
+      </header>
+      <main>
+        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          <div className="px-4 py-8 sm:px-0">
+            <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
+              <p className="text-xl text-gray-500">
+                Welcome, {user.name || user.email}! This is your dashboard.
+                You can start managing your tasks here.
+              </p>
             </div>
-
-            {/* Task Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white overflow-hidden shadow rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
-                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
-                    </div>
-                    <div className="ml-5 w-0 flex-1">
-                      <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">Total Tasks</dt>
-                        <dd className="flex items-baseline">
-                          <div className="text-2xl font-semibold text-gray-900">{summary.total}</div>
-                        </dd>
-                      </dl>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white overflow-hidden shadow rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
-                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div className="ml-5 w-0 flex-1">
-                      <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">Completed</dt>
-                        <dd className="flex items-baseline">
-                          <div className="text-2xl font-semibold text-gray-900">{summary.completed}</div>
-                        </dd>
-                      </dl>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white overflow-hidden shadow rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-yellow-500 rounded-md p-3">
-                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div className="ml-5 w-0 flex-1">
-                      <dl>
-                        <dt className="text-sm font-medium text-gray-500 truncate">Pending</dt>
-                        <dd className="flex items-baseline">
-                          <div className="text-2xl font-semibold text-gray-900">{summary.pending}</div>
-                        </dd>
-                      </dl>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Task List */}
-            <TaskList />
-          </>
-        ) : (
-          <div className="text-center py-10">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Please sign in to access your dashboard</h2>
           </div>
-        )}
+        </div>
       </main>
     </div>
   );

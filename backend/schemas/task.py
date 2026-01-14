@@ -27,6 +27,11 @@ class User(UserBase):
         from_attributes = True
 
 
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
 # Task schemas
 class TaskBase(BaseModel):
     title: str = Field(min_length=1, max_length=255)
