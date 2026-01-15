@@ -2,6 +2,7 @@
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { apiClient } from './api';
 
 const AuthContext = createContext<any>(null);
 
