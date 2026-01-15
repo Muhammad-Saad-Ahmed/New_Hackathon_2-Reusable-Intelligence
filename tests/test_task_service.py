@@ -1,6 +1,13 @@
 """
 Tests for the TaskService.
 """
+import sys
+import os
+import pytest
+
+# Add the project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from src.models.task import Task
 from src.repositories.task_repository import TaskRepository
 from src.services.task_service import TaskService
@@ -163,8 +170,20 @@ class TestTaskService:
         retrieved_task = self.repo.get_by_id(task.id)
         assert retrieved_task.completed is False
     
-    def test_mark_task_incomplete_not_found(self):
-        """Test marking a non-existing task as incomplete."""
-        result = self.service.mark_task_incomplete("nonexistent")
-        
-        assert result is None
+        def test_mark_task_incomplete_not_found(self):
+    
+            """Test marking a non-existing task as incomplete."""
+    
+            result = self.service.mark_task_incomplete("nonexistent")
+    
+            
+    
+            assert result is None
+    
+    
+    
+    if __name__ == "__main__":
+    
+        pytest.main()
+    
+    

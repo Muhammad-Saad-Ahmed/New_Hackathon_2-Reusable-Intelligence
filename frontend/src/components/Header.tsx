@@ -3,7 +3,7 @@ import { useAuth } from '@/lib/auth';
 import Link from 'next/link';
 
 export default function Header() {
-  const { user, signout, isSignedIn } = useAuth();
+  const { user, signOut, isSignedIn } = useAuth();
 
   return (
     <header className="bg-white shadow">
@@ -14,7 +14,7 @@ export default function Header() {
             <div className="flex items-center space-x-4">
               <span>Hello, {user?.name || user?.email}!</span>
               <button
-                onClick={signout}
+                onClick={() => signOut()}
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
               >
                 Sign Out

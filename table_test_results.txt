@@ -1,5 +1,8 @@
 Testing table creation...
-Database URL: sqlite:///./test.db
+Database URL: postgresql://neondb_owner:npg_Brg7ZVvQE6xn@ep-flat-star-ahs5g5su-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 Creating tables...
 Tables created successfully!
-Tables in database: ['tasks', 'users']
+Tables in database: ['users', 'tasks']
+✅ Users table exists
+✅ Tasks table exists
+Table creation test completed successfully!

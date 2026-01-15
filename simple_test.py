@@ -7,9 +7,13 @@ sys.stdout.flush()
 print("Testing database connection...")
 sys.stdout.flush()
 
+# Add the project root and backend directory to the path
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('./backend'))
+
 from sqlalchemy import text
-from backend.core.config import settings
-from backend.core.database import engine
+from core.config import settings
+from core.database import engine
 
 print(f"Database URL: {settings.DATABASE_URL}")
 sys.stdout.flush()

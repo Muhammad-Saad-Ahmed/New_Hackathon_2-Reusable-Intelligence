@@ -1,4 +1,10 @@
 Testing database connection...
-Database URL: sqlite:///./test.db
+Database URL: postgresql://neondb_owner:npg_Brg7ZVvQE6xn@ep-flat-star-ahs5g5su-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 Attempting to connect to the database...
 Connection established!
+✅ Database connection successful!
+✅ Query result: 1
+Detected PostgreSQL database
+✅ Connected to PostgreSQL: PostgreSQL 17.7 (e429a59) on aarch64-unknown-linux-gnu
+✅ Tables in database: ['users', 'tasks']
+Test completed successfully!

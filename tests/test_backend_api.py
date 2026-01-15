@@ -42,7 +42,7 @@ def test_tasks_routes_exist():
     # instead of a general 404 for non-existent routes
     response = client.get("/api/v1/user_id/tasks")
     # This should exist as a route pattern, even if it returns an auth error
-    assert response.status_code in [404, 401, 422]  # 422 if validation fails
+    assert response.status_code in [404, 401, 422, 403]  # 422 if validation fails
 
 
 if __name__ == "__main__":

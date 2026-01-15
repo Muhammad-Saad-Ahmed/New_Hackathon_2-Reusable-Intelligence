@@ -204,6 +204,46 @@ def validate_frontend_components():
     return True
 
 
+def validate_frontend_api_client():
+    """Validate that the frontend API client is properly implemented."""
+    print("\nValidating frontend API client...")
+
+    with open("frontend/src/lib/api.ts", "r") as f:
+        content = f.read()
+
+    # Check getTasks
+    if 'fetch(`${API_URL}/${userId}/tasks?${query.toString()}`' not in content:
+        print("FAILED frontend/src/lib/api.ts getTasks is not correct")
+        return False
+    print("OK frontend/src/lib/api.ts getTasks is correct")
+
+    # Check createTask
+    if 'fetch(`${API_URL}/${userId}/tasks`' not in content:
+        print("FAILED frontend/src/lib/api.ts createTask is not correct")
+        return False
+    print("OK frontend/src/lib/api.ts createTask is correct")
+
+    # Check updateTask
+    if 'fetch(`${API_URL}/${userId}/tasks/${taskId}`' not in content:
+        print("FAILED frontend/src/lib/api.ts updateTask is not correct")
+        return False
+    print("OK frontend/src/lib/api.ts updateTask is correct")
+
+    # Check updateTaskCompletion
+    if 'fetch(`${API_URL}/${userId}/tasks/${taskId}/complete`' not in content:
+        print("FAILED frontend/src/lib/api.ts updateTaskCompletion is not correct")
+        return False
+    print("OK frontend/src/lib/api.ts updateTaskCompletion is correct")
+
+    # Check deleteTask
+    if 'fetch(`${API_URL}/${userId}/tasks/${taskId}`' not in content:
+        print("FAILED frontend/src/lib/api.ts deleteTask is not correct")
+        return False
+    print("OK frontend/src/lib/api.ts deleteTask is correct")
+
+    return True
+
+
 def main():
     """Run all validations."""
     print("="*60)
@@ -217,6 +257,7 @@ def main():
     all_validations_passed &= validate_content()
     all_validations_passed &= validate_api_endpoints()
     all_validations_passed &= validate_frontend_components()
+    all_validations_passed &= validate_frontend_api_client()
 
     print("\n" + "="*60)
     if all_validations_passed:

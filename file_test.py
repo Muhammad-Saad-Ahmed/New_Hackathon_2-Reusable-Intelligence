@@ -4,11 +4,16 @@ Test script to verify PostgreSQL connection with the current configuration.
 import os
 import sys
 from sqlalchemy import text
-from backend.core.config import settings
-from backend.core.database import engine
+
+# Add the project root and backend directory to the path
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('./backend'))
+
+from core.config import settings
+from core.database import engine
 
 # Write results to a file
-with open("db_test_results.txt", "w") as f:
+with open("db_test_results.txt", "w", encoding="utf-8") as f:
     f.write("Testing database connection...\n")
     f.write(f"Database URL: {settings.DATABASE_URL}\n")
 

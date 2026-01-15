@@ -1,6 +1,7 @@
 """
 Final validation tests for the Todo Application.
 """
+import subprocess
 from src.models.task import Task
 from src.repositories.task_repository import TaskRepository
 from src.services.task_service import TaskService
@@ -164,7 +165,19 @@ def test_application_flow():
     print("OK Complete workflow functions properly")
 
 
-if __name__ == "__main__":
+def test_phase_ii():
+    """Run the validation script for Phase II."""
+    print("\nTesting Phase II...")
+    try:
+        result = subprocess.run(["python", "validate_implementation.py"], capture_output=True, text=True, check=True)
+        print(result.stdout)
+        print("   OK Phase II validation script passed")
+    except subprocess.CalledProcessError as e:
+        print("   FAILED Phase II validation script failed")
+        print(e.stderr)
+        raise e
+
+def main():
     print("Running final validation tests...")
     
     test_all_basic_level_features()
@@ -182,3 +195,8 @@ if __name__ == "__main__":
     print("4. View Task List")
     print("5. Mark as Complete")
     print("="*50)
+
+    test_phase_ii()
+
+if __name__ == "__main__":
+    main()

@@ -1,6 +1,13 @@
 """
 Integration tests for the Todo Application.
 """
+import sys
+import os
+import pytest
+
+# Add the project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from src.models.task import Task
 from src.repositories.task_repository import TaskRepository
 from src.services.task_service import TaskService
@@ -126,6 +133,9 @@ class TestIntegration:
         result = self.service.mark_task_complete("nonexistent")
         assert result is None
         
-        # Try to mark a non-existent task as incomplete
+                # Try to mark a non-existent task as incomplete
         result = self.service.mark_task_incomplete("nonexistent")
         assert result is None
+
+if __name__ == "__main__":
+    pytest.main()

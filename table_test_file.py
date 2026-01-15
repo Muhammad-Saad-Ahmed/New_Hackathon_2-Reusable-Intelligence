@@ -4,16 +4,17 @@ Test script to check if tables are created in the database.
 import sys
 import os
 
+# Add the project root and backend directory to the path
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('./backend'))
+
 # Write results to a file
-with open("table_test_results.txt", "w") as f:
+with open("table_test_results.txt", "w", encoding="utf-8") as f:
     f.write("Testing table creation...\n")
     
-    # Add the project root to the Python path
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-    from backend.core.config import settings
-    from backend.core.database import engine, Base
-    from backend.models.database import User, Task
+    from core.config import settings
+    from core.database import engine, Base
+    from models.database import User, Task
 
     f.write(f"Database URL: {settings.DATABASE_URL}\n")
     

@@ -4,8 +4,13 @@ Test script to verify PostgreSQL connection with the current configuration.
 import os
 import sys
 from sqlalchemy import text
-from backend.core.config import settings
-from backend.core.database import engine
+
+# Add the project root and backend directory to the path
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('./backend'))
+
+from core.config import settings
+from core.database import engine
 
 def test_db_connection():
     print("Testing database connection...")

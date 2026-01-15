@@ -2,6 +2,12 @@
 Tests for the TaskRepository.
 """
 import pytest
+import sys
+import os
+
+# Add the project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from src.models.task import Task
 from src.repositories.task_repository import TaskRepository
 
@@ -94,8 +100,20 @@ class TestTaskRepository:
         assert result is True
         assert self.repo.get_by_id("1") is None
     
-    def test_delete_nonexistent_task(self):
-        """Test deleting a non-existing task."""
-        result = self.repo.delete("nonexistent")
-        
-        assert result is False
+        def test_delete_nonexistent_task(self):
+    
+            """Test deleting a non-existing task."""
+    
+            result = self.repo.delete("nonexistent")
+    
+            
+    
+            assert result is False
+    
+    
+    
+    if __name__ == "__main__":
+    
+        pytest.main()
+    
+    

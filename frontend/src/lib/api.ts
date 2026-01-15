@@ -18,10 +18,9 @@ const handleResponse = async (response: Response) => {
 };
 
 export const apiClient = {
-  async getTasks(userId: number, filters?: { status?: string; priority?: string }) {
+  async getTasks(userId: string, filters?: { status?: string; priority?: string }) {
     const token = getAuthToken();
     const query = new URLSearchParams();
-    query.append('user_id', String(userId));
     if (filters?.status) {
       query.append('status', filters.status);
     }
@@ -30,7 +29,7 @@ export const apiClient = {
     }
 
     try {
-      const response = await fetch(`${API_URL}/tasks/?${query.toString()}`, {
+      const response = await fetch(`${API_URL}/${userId}/tasks?${query.toString()}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -43,10 +42,10 @@ export const apiClient = {
     }
   },
 
-  async createTask(userId: number, taskData: { title: string; description?: string; priority?: string; tags?: string[], completed: boolean }) {
+  async createTask(userId: string, taskData: { title: string; description?: string; priority?: string; tags?: string[], completed: boolean }) {
     const token = getAuthToken();
     try {
-      const response = await fetch(`${API_URL}/tasks/`, {
+      const response = await fetch(`${API_URL}/${userId}/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,10 +59,10 @@ export const apiClient = {
     }
   },
 
-  async updateTask(userId: number, taskId: string, taskData: any) {
+  async updateTask(userId: string, taskId: string, taskData: any) {
     const token = getAuthToken();
     try {
-      const response = await fetch(`${API_URL}/tasks/${taskId}`, {
+      const response = await fetch(`${API_URL}/${userId}/tasks/${taskId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -77,10 +76,10 @@ export const apiClient = {
     }
   },
 
-  async updateTaskCompletion(userId: number, taskId: string, completed: boolean) {
+  async updateTaskCompletion(userId: string, taskId: string, completed: boolean) {
     const token = getAuthToken();
     try {
-      const response = await fetch(`${API_URL}/tasks/${taskId}/complete`, {
+      const response = await fetch(`${API_URL}/${userId}/tasks/${taskId}/complete`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -94,10 +93,10 @@ export const apiClient = {
     }
   },
 
-  async deleteTask(userId: number, taskId: string) {
+  async deleteTask(userId: string, taskId: string) {
     const token = getAuthToken();
     try {
-      const response = await fetch(`${API_URL}/tasks/${taskId}`, {
+      const response = await fetch(`${API_URL}/${userId}/tasks/${taskId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -112,10 +111,26 @@ export const apiClient = {
 
   async signin(email: string, password: string) {
     try {
-      const response = await fetch(`${API_URL}/auth/token`, {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ username: email, password }),
+        body: new URLSearchParams({ email: email, password: password }),
+      });
+      return await handleResponse(response);
+    } catch (error) {
+      return { success: false, error: 'Network error or server is down' };
+    }
+  },
+
+  async getMe() {
+    const token = getAuthToken();
+    try {
+      const response = await fetch(`${API_URL}/auth/me`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       });
       return await handleResponse(response);
     } catch (error) {

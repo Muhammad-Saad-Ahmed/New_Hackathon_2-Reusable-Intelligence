@@ -6,13 +6,14 @@ import os
 
 # Add the project root to the path
 sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('./backend'))
 
 def test_backend_structure():
     print("Testing backend code structure...")
     
     # Check if main.py exists and can be imported
     try:
-        import backend.main
+        import main
         print("OK main.py exists and can be imported")
     except ImportError as e:
         print(f"FAILED main.py import error: {e}")
@@ -21,7 +22,7 @@ def test_backend_structure():
     
     # Check if core modules exist
     try:
-        import backend.core.config
+        import core.config
         print("OK config module exists")
     except ImportError as e:
         print(f"FAILED config import error: {e}")
@@ -29,7 +30,7 @@ def test_backend_structure():
         print(f"FAILED config error: {e}")
     
     try:
-        import backend.core.database
+        import core.database
         print("OK database module exists")
     except ImportError as e:
         print(f"FAILED database import error: {e}")
@@ -37,7 +38,7 @@ def test_backend_structure():
         print(f"FAILED database error: {e}")
     
     try:
-        import backend.core.security
+        import core.security
         print("OK security module exists")
     except ImportError as e:
         print(f"FAILED security import error: {e}")
@@ -46,7 +47,7 @@ def test_backend_structure():
     
     # Check if models exist
     try:
-        import backend.models.database
+        import models.database
         print("OK database models exist")
     except ImportError as e:
         print(f"FAILED database models import error: {e}")
@@ -55,7 +56,7 @@ def test_backend_structure():
     
     # Check if schemas exist
     try:
-        import backend.schemas.task
+        import schemas.task
         print("OK task schemas exist")
     except ImportError as e:
         print(f"FAILED task schemas import error: {e}")
@@ -64,7 +65,7 @@ def test_backend_structure():
     
     # Check if middleware exists
     try:
-        import backend.middleware.auth_middleware
+        import middleware.auth_middleware
         print("OK auth middleware exists")
     except ImportError as e:
         print(f"FAILED auth middleware import error: {e}")
@@ -73,7 +74,7 @@ def test_backend_structure():
     
     # Check if services exist
     try:
-        import backend.services.task_service
+        import services.task_service
         print("OK task service exists")
     except ImportError as e:
         print(f"FAILED task service import error: {e}")
@@ -82,7 +83,7 @@ def test_backend_structure():
     
     # Check if API routes exist
     try:
-        import backend.api.v1.tasks
+        import api.v1.tasks
         print("OK tasks API exists")
     except ImportError as e:
         print(f"FAILED tasks API import error: {e}")
@@ -90,7 +91,7 @@ def test_backend_structure():
         print(f"FAILED tasks API error: {e}")
     
     try:
-        import backend.api.v1.auth
+        import api.v1.auth
         print("OK auth API exists")
     except ImportError as e:
         print(f"FAILED auth API import error: {e}")

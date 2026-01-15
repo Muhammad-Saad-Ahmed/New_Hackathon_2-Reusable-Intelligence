@@ -7,12 +7,13 @@ sys.stdout.flush()
 print("Testing table creation...")
 sys.stdout.flush()
 
-# Add the project root to the Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add the project root and backend directory to the path
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('./backend'))
 
-from backend.core.config import settings
-from backend.core.database import engine, Base
-from backend.models.database import User, Task
+from core.config import settings
+from core.database import engine, Base
+from models.database import User, Task
 
 print(f"Database URL: {settings.DATABASE_URL}")
 sys.stdout.flush()

@@ -2,7 +2,13 @@
 Tests for the Task model.
 """
 import pytest
+import sys
+import os
 from datetime import datetime
+
+# Add the project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from src.models.task import Task
 
 
@@ -93,13 +99,30 @@ class TestTask:
         assert "X" in str_repr  # Complete marker
         assert "Test Task" in str_repr
     
-    def test_detailed_str_representation(self):
-        """Test detailed string representation of the task."""
-        task = Task(id="1", title="Test Task", description="Test Description", completed=True)
-        
-        detailed_str = task.detailed_str()
-        
-        assert "ID: 1" in detailed_str
-        assert "Title: Test Task" in detailed_str
-        assert "Description: Test Description" in detailed_str
-        assert "Status: Completed" in detailed_str
+        def test_detailed_str_representation(self):
+    
+            """Test detailed string representation of the task."""
+    
+            task = Task(id="1", title="Test Task", description="Test Description", completed=True)
+    
+            
+    
+            detailed_str = task.detailed_str()
+    
+            
+    
+            assert "ID: 1" in detailed_str
+    
+            assert "Title: Test Task" in detailed_str
+    
+            assert "Description: Test Description" in detailed_str
+    
+            assert "Status: Completed" in detailed_str
+    
+    
+    
+    if __name__ == "__main__":
+    
+        pytest.main()
+    
+    

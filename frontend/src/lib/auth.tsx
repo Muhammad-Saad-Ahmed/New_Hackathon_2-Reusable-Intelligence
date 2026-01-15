@@ -11,22 +11,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // Check for a token or user session
-    const token = localStorage.getItem('token');
-    if (token) {
-      // In a real app, you'd validate the token with the backend
-      // and fetch user data.
-      // For now, we'll just simulate a logged-in user.
-      setUser({ email: 'test@example.com', name: 'Test User', id: 1 });
-    }
-    setLoading(false);
+    const checkUser = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const { success, data, error } = await apiClient.getMe();
+        if (success) {
+          setUser(data);
+        } else {
+          console.error('Failed to fetch user data:', error);
+          localStorage.removeItem('token');
+        }
+      }
+      setLoading(false);
+    };
+
+    checkUser();
   }, []);
 
-  const signin = (email: string, token: string) => {
-    localStorage.setItem('token', token);
-    // In a real app, you'd fetch user data from the backend here
-    setUser({ email, name: 'User', id: 1 });
-    router.push('/dashboard');
+  const signin = async (email: string, password: string) => {
+    const { success, data, error } = await apiClient.signin(email, password);
+
+    if (success && data.access_token) {
+      localStorage.setItem('token', data.access_token);
+      
+      const { success: meSuccess, data: meData, error: meError } = await apiClient.getMe();
+      
+      if(meSuccess) {
+        setUser(meData);
+        router.push('/dashboard');
+        return true;
+      } else {
+        console.error('Failed to fetch user data:', meError);
+        // still logged in, but we dont have user data
+        // you might want to handle this case differently
+        router.push('/dashboard');
+        return true;
+      }
+    }
+
+    console.error('Signin failed:', error);
+    return false;
   };
 
   const signout = () => {
