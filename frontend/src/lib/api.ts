@@ -1,4 +1,16 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/v1';
+// Base URL for the API, with robust handling for different environments
+let apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
+// Ensure the API URL is correctly formatted with the /api/v1 prefix
+if (!apiUrl.endsWith('/api/v1')) {
+  if (apiUrl.endsWith('/')) {
+    apiUrl = `${apiUrl}api/v1`;
+  } else {
+    apiUrl = `${apiUrl}/api/v1`;
+  }
+}
+
+const API_URL = apiUrl;
 
 const getAuthToken = () => {
   if (typeof window === 'undefined') {
