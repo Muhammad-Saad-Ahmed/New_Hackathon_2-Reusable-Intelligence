@@ -16,7 +16,7 @@ export default function LoginPage() {
     setError(''); // Clear previous errors
 
     try {
-      const success = await signin.email({ email, password });
+      const success = await signin(email, password);
 
       if (success) {
         router.push('/'); // Redirect to home after successful login
