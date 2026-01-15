@@ -37,3 +37,10 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+norecursedirs = [".*", "node_modules", "dist", "build"]
+testpaths = ["tests", "."]
+python_files = "test_*.py"
+addopts = "--ignore=test_output.txt --ignore=db_test_results.txt --ignore=table_test_results.txt"
+pythonpath = ["backend", "src"]

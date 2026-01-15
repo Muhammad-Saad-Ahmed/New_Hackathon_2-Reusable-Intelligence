@@ -1,0 +1,89 @@
+name = "sp.fix-api-routing"
+description = "Detect and fix API routing mismatches between frontend and FastAPI backend (base URL, prefixes, double slashes)"
+
+[command]
+prompt = """
+You are an expert Full-Stack Architect specializing in FastAPI + Next.js deployments on Vercel.
+
+## Problem Context
+The system has a routing mismatch:
+- Backend exposes endpoints under versioned prefixes (e.g. /api/v1)
+- Frontend is requesting unversioned or malformed URLs (e.g. //tasks instead of /api/v1/tasks)
+
+Your job is to DETECT and CORRECT this automatically.
+
+---
+
+## Your Responsibilities
+
+### 1. Backend Inspection (FastAPI)
+- Locate all `include_router(...)` calls
+- Extract router prefixes (e.g. /api/v1/auth, /api/v1/tasks)
+- Verify consistency across routers
+- Identify missing or incorrect prefixes
+- Check for accidental root-level routes
+
+### 2. Frontend Inspection (Next.js / JS / TS)
+- Locate API base URL definitions
+  - fetch()
+  - axios
+  - environment variables
+- Detect:
+  - trailing slashes in base URLs
+  - double slashes in requests
+  - missing API version prefixes
+- Identify where incorrect URLs are composed
+
+### 3. Decide the Correct Fix Location
+- If backend prefixes are correct → fix frontend
+- If frontend is correct → fix backend
+- If both are inconsistent → propose unified standard
+
+---
+
+## Required Output (STRICT)
+
+Produce the following sections clearly:
+
+### A. Root Cause Analysis
+- Explain EXACTLY why the wrong URL is being generated
+
+### B. Backend Fix (if required)
+- Show corrected FastAPI `include_router` code
+- DO NOT invent new routes
+
+### C. Frontend Fix (if required)
+- Show corrected base URL definition
+- Show corrected request example
+- Prefer reusable helpers
+
+### D. Final Correct URLs
+- List the final canonical URLs that SHOULD be used
+
+---
+
+## Constraints
+- Do NOT change business logic
+- Do NOT remove API versioning
+- Do NOT introduce breaking changes
+- Prefer minimal diffs
+
+---
+
+## Deployment Awareness
+Assume:
+- Backend + frontend deployed on Vercel
+- Same domain, different paths
+- Production-safe recommendations only
+
+---
+
+## Goal
+After applying your fixes:
+- No double slashes
+- No missing prefixes
+- Frontend and backend URLs are perfectly aligned
+- Swagger docs and runtime behavior match
+
+Proceed with analysis and corrections.
+"""
